@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -32,29 +33,30 @@ public class MainViewController implements Initializable {
 	}
 
 	public void onMenuItemDepartamentoAction() {
-		loadView("/gui/DepartamentoLista.fxml",1);
+		loadView("/gui/DepartamentoLista.fxml",(DepartamentoViewControler dep)->
+		{
+			dep.setServiceDepartamento(new DepartamentoService());
+			dep.UpdateTableDepartamento();
+		}
+		);
 	}
 
 	public void onMenuItemAboutAction() {
-		loadView("/gui/AboutView.fxml",0);
+		loadView("/gui/AboutView.fxml",x->{});
 	}
 
-public synchronized void loadView(String nomeView,int id) {
+public synchronized <T> void loadView(String nomeView,Consumer<T> expressao) {
 	try {
 	FXMLLoader newView = new FXMLLoader(getClass().getResource(nomeView));
 	VBox newVBox = newView.load();
-	Scene mainScene = Main.getMainScne();
+	Scene mainScene = Main.getMainScene();
 	VBox mainsVBox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
 	Node mainMenu = mainsVBox.getChildren().get(0);
 	mainsVBox.getChildren().clear();
 	mainsVBox.getChildren().add(mainMenu);
 	mainsVBox.getChildren().addAll(newVBox.getChildren());
-	if(id == 1) {
-		DepartamentoViewControler  dep= newView.getController();
-		dep.setServiceDepartamento(new DepartamentoService());
-		dep.UpdateTableDepartamento();
-		
-	}
+	T dep = newView.getController();
+	expressao.accept(dep);
 	}catch (IOException e) {
 		Alerts.showAlerts("IOException","Error",  e.getMessage(),AlertType.ERROR);
 	}

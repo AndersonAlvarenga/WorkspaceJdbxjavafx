@@ -8,7 +8,6 @@ import application.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -45,7 +44,7 @@ public class DepartamentoViewControler implements Initializable {
 		tableColunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 
-		Stage stage = (Stage) Main.getMainScne().getWindow();
+		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewDepartamento.prefHeightProperty().bind(stage.heightProperty());
 
 	}
