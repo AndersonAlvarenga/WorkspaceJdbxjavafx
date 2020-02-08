@@ -15,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import modelo.service.DepartamentoService;
 
 public class MainViewController implements Initializable {
 
@@ -31,14 +32,14 @@ public class MainViewController implements Initializable {
 	}
 
 	public void onMenuItemDepartamentoAction() {
-		loadView("/gui/DepartamentoLista.fxml");
+		loadView("/gui/DepartamentoLista.fxml",1);
 	}
 
 	public void onMenuItemAboutAction() {
-		loadView("/gui/AboutView.fxml");
+		loadView("/gui/AboutView.fxml",0);
 	}
 
-public synchronized void loadView(String nomeView) {
+public synchronized void loadView(String nomeView,int id) {
 	try {
 	FXMLLoader newView = new FXMLLoader(getClass().getResource(nomeView));
 	VBox newVBox = newView.load();
@@ -48,6 +49,12 @@ public synchronized void loadView(String nomeView) {
 	mainsVBox.getChildren().clear();
 	mainsVBox.getChildren().add(mainMenu);
 	mainsVBox.getChildren().addAll(newVBox.getChildren());
+	if(id == 1) {
+		DepartamentoViewControler  dep= newView.getController();
+		dep.setServiceDepartamento(new DepartamentoService());
+		dep.UpdateTableDepartamento();
+		
+	}
 	}catch (IOException e) {
 		Alerts.showAlerts("IOException","Error",  e.getMessage(),AlertType.ERROR);
 	}
