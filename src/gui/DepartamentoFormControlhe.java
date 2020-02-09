@@ -14,8 +14,8 @@ import javafx.scene.control.TextField;
 import modelo.dao.DaoFactory;
 import modelo.entidades.Departamento;
 
-public class DepartamentoFormControlhe implements Initializable{
-
+public class DepartamentoFormControlhe implements Initializable {
+	private Departamento departamentoIstanci;
 	@FXML
 	private Button brSalvar;
 	@FXML
@@ -26,31 +26,38 @@ public class DepartamentoFormControlhe implements Initializable{
 	private TextField txtNome;
 	@FXML
 	private Label labelErro;
-	
+
 	@FXML
 	public void onBtSalvarAction() {
 		Departamento depart = new Departamento(null, txtNome.getText());
 		DaoFactory.createDepartDao().insert(depart);
 		Alerts.showAlerts("Cadastro realizado", null, "Departamento cadastrado com sucesso", AlertType.INFORMATION);
 	}
+
 	@FXML
 	public void onBtCancelarAction() {
-		
+
 		Alerts.showAlerts("Cadastro Cancelado", null, "Departamento não cadastrado", AlertType.INFORMATION);
-		
+
 	}
-	
+
+	public void setDepartamento(Departamento departamentoInstanc) {
+		this.departamentoIstanci = departamentoInstanc;
+	}
+
+	public void updateFormTextFild() {
+		txtId.setText(String.valueOf(departamentoIstanci.getId()));
+		txtNome.setText(String.valueOf(departamentoIstanci.getNome()));
+	}
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		InitializeNodes();
 	}
-	
-	
-	
+
 	private void InitializeNodes() {
 		Contraints.setTextFieldInteger(txtId);
 		Contraints.setTextFieldMaxLength(txtNome, 30);
 	}
-
 
 }

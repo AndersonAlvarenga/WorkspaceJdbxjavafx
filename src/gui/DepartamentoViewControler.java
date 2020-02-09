@@ -36,12 +36,13 @@ public class DepartamentoViewControler implements Initializable {
 	private TableColumn<Departamento, String> tableColunaNome;
 	@FXML
 	private Button btNewDepartamento;
-	private ObservableList<Departamento>obsList;
+	private ObservableList<Departamento> obsList;
 
 	@FXML
 	public void onBtNewDepartamentoAction(ActionEvent action) {
 		Stage parent = Util.palcoAtual(action);
-		createDialogForm("/gui/DepartamentoForm.fxml", parent);
+		Departamento dep = new Departamento();
+		createDialogForm(dep,"/gui/DepartamentoForm.fxml", parent);
 	}
 
 	@Override
@@ -62,27 +63,33 @@ public class DepartamentoViewControler implements Initializable {
 	public void setServiceDepartamento(DepartamentoService service) {
 		this.serviceDepart = service;
 	}
+
 	public void UpdateTableDepartamento() {
-		if(serviceDepart==null) {
+		if (serviceDepart == null) {
 			throw new IllegalStateException("Nao foi criado depencia com o DepartamentoService ");
 		}
-		List<Departamento>list = serviceDepart.findAll();
-		obsList=FXCollections.observableArrayList(list);
+		List<Departamento> list = serviceDepart.findAll();
+		obsList = FXCollections.observableArrayList(list);
 		tableViewDepartamento.setItems(obsList);
 	}
-	public void createDialogForm(String absoluteName,Stage parentStage) {
+
+	public void createDialogForm(Departamento dep, String absoluteName, Stage parentStage) {
 		try {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-		Pane pane = loader.load();
-		
-		Stage stage = new Stage();
-		stage.setTitle("");
-		stage.setScene(new Scene(pane));
-		stage.setResizable(false);
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.showAndWait();
-		}catch (IOException e) {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+			
+			DepartamentoFormControlhe controle = loader.getController();
+			controle.setDepartamento(dep);
+			controle.updateFormTextFild();
+
+			Stage stage = new Stage();
+			stage.setTitle("");
+			stage.setScene(new Scene(pane));
+			stage.setResizable(false);
+			stage.initOwner(parentStage);
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.showAndWait();
+		} catch (IOException e) {
 			Alerts.showAlerts("Erro", "Erro ao carregar tela", e.getMessage(), AlertType.ERROR);
 		}
 	}
