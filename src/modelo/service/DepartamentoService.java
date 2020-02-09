@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import modelo.dao.DaoFactory;
+import modelo.dao.DepartamentoDao;
 import modelo.entidades.Departamento;
 
 public class DepartamentoService {
-	
-	public List<Departamento> findAll(){
-		List<Departamento> listDepartamento = new ArrayList<Departamento>();
-		listDepartamento=DaoFactory.createDepartDao().findAll();
-		return listDepartamento;
+	private DepartamentoDao departDao = DaoFactory.createDepartDao();
+	public List<Departamento> findAll(){	
+		return departDao.findAll();
+	}
+	public void insertDepartamento(Departamento dep) {
+		DaoFactory.createDepartDao().insert(dep);
 	}
 
 }
