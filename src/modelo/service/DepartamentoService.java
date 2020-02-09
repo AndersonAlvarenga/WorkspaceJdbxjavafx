@@ -14,5 +14,12 @@ public class DepartamentoService {
 	public void insertDepartamento(Departamento dep) {
 		DaoFactory.createDepartDao().insert(dep);
 	}
+	public void saveNewDepartmento(Departamento obj) {
+		if(obj.getId()==null) {
+		departDao.insert(obj);
+		}else {
+			departDao.update(obj);
+		}
+	}
 
 }

@@ -80,6 +80,7 @@ public class DepartamentoViewControler implements Initializable {
 			
 			DepartamentoFormControlhe controle = loader.getController();
 			controle.setDepartamento(dep);
+			controle.instanciacaoDepartamentoService(new DepartamentoService());
 			controle.updateFormTextFild();
 
 			Stage stage = new Stage();

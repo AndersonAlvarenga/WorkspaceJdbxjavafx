@@ -3,19 +3,34 @@ package gui;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import db.DbException;
 import gui.util.Alerts;
 import gui.util.Contraints;
+import gui.util.Util;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import modelo.dao.DaoFactory;
 import modelo.entidades.Departamento;
+import modelo.service.DepartamentoService;
 
 public class DepartamentoFormControlhe implements Initializable {
 	private Departamento departamentoIstanci;
+	private MainViewController telaMain;
+
+	public void intanciatelaMain(MainViewController telaMain) {
+this.telaMain=telaMain;
+	}
+
+	private DepartamentoService depService;
+
+	public void instanciacaoDepartamentoService(DepartamentoService depService) {
+		this.depService = depService;
+	}
+
 	@FXML
 	private Button brSalvar;
 	@FXML
@@ -28,17 +43,23 @@ public class DepartamentoFormControlhe implements Initializable {
 	private Label labelErro;
 
 	@FXML
-	public void onBtSalvarAction() {
-		Departamento depart = new Departamento(null, txtNome.getText());
-		DaoFactory.createDepartDao().insert(depart);
-		Alerts.showAlerts("Cadastro realizado", null, "Departamento cadastrado com sucesso", AlertType.INFORMATION);
+	public void onBtSalvarAction(ActionEvent event) {
+		try {
+			Departamento depart = new Departamento(Util.parseToInt(txtId.getText()), txtNome.getText());
+			depService.saveNewDepartmento(depart);
+			Alerts.showAlerts("Cadastro realizado", null, "Departamento cadastrado com sucesso", AlertType.INFORMATION);
+			Util.palcoAtual(event).close();
+		} catch (DbException e) {
+			Alerts.showAlerts("Erro ao salvar no banco de dados", null, e.getMessage(), AlertType.ERROR);
+		}
+
 	}
 
 	@FXML
-	public void onBtCancelarAction() {
+	public void onBtCancelarAction(ActionEvent event) {
 
 		Alerts.showAlerts("Cadastro Cancelado", null, "Departamento não cadastrado", AlertType.INFORMATION);
-
+		Util.palcoAtual(event).close();
 	}
 
 	public void setDepartamento(Departamento departamentoInstanc) {
