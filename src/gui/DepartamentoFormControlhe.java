@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeres.DataChangeListerner;
 import gui.util.Alerts;
 import gui.util.Contraints;
 import gui.util.Util;
@@ -19,16 +22,16 @@ import modelo.service.DepartamentoService;
 
 public class DepartamentoFormControlhe implements Initializable {
 	private Departamento departamentoIstanci;
-	private MainViewController telaMain;
-
-	public void intanciatelaMain(MainViewController telaMain) {
-this.telaMain=telaMain;
-	}
 
 	private DepartamentoService depService;
 
 	public void instanciacaoDepartamentoService(DepartamentoService depService) {
 		this.depService = depService;
+	}
+	private List<DataChangeListerner> listaListener=new ArrayList<DataChangeListerner>();
+	
+	public void carregaListerner(DataChangeListerner listerner) {
+		listaListener.add(listerner);
 	}
 
 	@FXML
@@ -48,11 +51,19 @@ this.telaMain=telaMain;
 			Departamento depart = new Departamento(Util.parseToInt(txtId.getText()), txtNome.getText());
 			depService.saveNewDepartmento(depart);
 			Alerts.showAlerts("Cadastro realizado", null, "Departamento cadastrado com sucesso", AlertType.INFORMATION);
+			notifiqueList();
 			Util.palcoAtual(event).close();
 		} catch (DbException e) {
 			Alerts.showAlerts("Erro ao salvar no banco de dados", null, e.getMessage(), AlertType.ERROR);
 		}
 
+	}
+
+	private void notifiqueList() {
+		for(DataChangeListerner lister:listaListener) {
+			lister.onDataChange();
+		}
+		
 	}
 
 	@FXML

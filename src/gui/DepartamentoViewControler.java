@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeres.DataChangeListerner;
 import gui.util.Alerts;
 import gui.util.Util;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import modelo.entidades.Departamento;
 import modelo.service.DepartamentoService;
 
-public class DepartamentoViewControler implements Initializable {
+public class DepartamentoViewControler implements Initializable,DataChangeListerner{
 	private DepartamentoService serviceDepart;
 	@FXML
 	private TableView<Departamento> tableViewDepartamento;
@@ -81,6 +82,7 @@ public class DepartamentoViewControler implements Initializable {
 			DepartamentoFormControlhe controle = loader.getController();
 			controle.setDepartamento(dep);
 			controle.instanciacaoDepartamentoService(new DepartamentoService());
+			controle.carregaListerner(this);
 			controle.updateFormTextFild();
 
 			Stage stage = new Stage();
@@ -93,6 +95,12 @@ public class DepartamentoViewControler implements Initializable {
 		} catch (IOException e) {
 			Alerts.showAlerts("Erro", "Erro ao carregar tela", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onDataChange() {
+		UpdateTableDepartamento();
+		
 	}
 
 }
