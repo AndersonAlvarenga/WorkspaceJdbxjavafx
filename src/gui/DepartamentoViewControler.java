@@ -9,17 +9,19 @@ import application.Main;
 import gui.listeres.DataChangeListerner;
 import gui.util.Alerts;
 import gui.util.Util;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -27,7 +29,7 @@ import javafx.stage.Stage;
 import modelo.entidades.Departamento;
 import modelo.service.DepartamentoService;
 
-public class DepartamentoViewControler implements Initializable,DataChangeListerner{
+public class DepartamentoViewControler implements Initializable, DataChangeListerner {
 	private DepartamentoService serviceDepart;
 	@FXML
 	private TableView<Departamento> tableViewDepartamento;
@@ -38,12 +40,14 @@ public class DepartamentoViewControler implements Initializable,DataChangeLister
 	@FXML
 	private Button btNewDepartamento;
 	private ObservableList<Departamento> obsList;
+	@FXML
+	private TableColumn<Departamento, Departamento> tableColumnEDIT;
 
 	@FXML
 	public void onBtNewDepartamentoAction(ActionEvent action) {
 		Stage parent = Util.palcoAtual(action);
 		Departamento dep = new Departamento();
-		createDialogForm(dep,"/gui/DepartamentoForm.fxml", parent);
+		createDialogForm(dep, "/gui/DepartamentoForm.fxml", parent);
 	}
 
 	@Override
@@ -72,13 +76,14 @@ public class DepartamentoViewControler implements Initializable,DataChangeLister
 		List<Departamento> list = serviceDepart.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDepartamento.setItems(obsList);
+		initEditButtons();
 	}
 
 	public void createDialogForm(Departamento dep, String absoluteName, Stage parentStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
-			
+
 			DepartamentoFormControlhe controle = loader.getController();
 			controle.setDepartamento(dep);
 			controle.instanciacaoDepartamentoService(new DepartamentoService());
@@ -100,7 +105,28 @@ public class DepartamentoViewControler implements Initializable,DataChangeLister
 	@Override
 	public void onDataChange() {
 		UpdateTableDepartamento();
-		
+
+	}
+
+	private void initEditButtons() {
+		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEDIT.setCellFactory(param -> new TableCell<Departamento, Departamento>() {
+			private final Button button = new Button("edit");
+
+			@Override
+			protected void updateItem(Departamento obj, boolean empty) {
+				super.updateItem(obj, empty);
+
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+
+				setGraphic(button);
+				button.setOnAction(
+						event -> createDialogForm(obj, "/gui/DepartamentoForm.fxml", Util.palcoAtual(event)));
+			}
+		});
 	}
 
 }

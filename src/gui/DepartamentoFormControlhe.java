@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.xml.bind.ValidationException;
-
 import db.DbException;
 import gui.listeres.DataChangeListerner;
 import gui.util.Alerts;
