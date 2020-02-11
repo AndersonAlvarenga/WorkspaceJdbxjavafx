@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.DbException;
 import db.DbIntegritExeption;
 import gui.listeres.DataChangeListerner;
 import gui.util.Alerts;
@@ -159,12 +160,17 @@ public class DepartamentoViewControler implements Initializable, DataChangeListe
 		Optional<ButtonType> result = Alerts.showConfirmaticao("Confirmação",
 				"Deseja delatar o departamento selecionado:");
 		if (result.get() == ButtonType.OK) {
+			if (serviceDepart == null) {
+				throw new IllegalStateException("DepartamentoService nao instanciado");
+			}
 			try {
 				serviceDepart.removeDepart(obj);
 				UpdateTableDepartamento();
-			} catch (DbIntegritExeption e) {
-				Alerts.showAlerts("Erro", null, "Erro ao deletar: " + e.getMessage(), AlertType.ERROR);
+
+			} catch (DbException e) {
+				Alerts.showAlerts("Erro ao deletar", null, e.getMessage(), AlertType.ERROR);
 			}
+
 		}
 	}
 }
