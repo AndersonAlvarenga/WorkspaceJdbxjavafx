@@ -3,9 +3,11 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.DbIntegritExeption;
 import gui.listeres.DataChangeListerner;
 import gui.util.Alerts;
 import gui.util.Util;
@@ -19,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -42,6 +45,8 @@ public class DepartamentoViewControler implements Initializable, DataChangeListe
 	private ObservableList<Departamento> obsList;
 	@FXML
 	private TableColumn<Departamento, Departamento> tableColumnEDIT;
+	@FXML
+	private TableColumn<Departamento, Departamento> tableColumnDelete;
 
 	@FXML
 	public void onBtNewDepartamentoAction(ActionEvent action) {
@@ -77,6 +82,7 @@ public class DepartamentoViewControler implements Initializable, DataChangeListe
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDepartamento.setItems(obsList);
 		initEditButtons();
+		initDeleteButtons();
 	}
 
 	public void createDialogForm(Departamento dep, String absoluteName, Stage parentStage) {
@@ -129,4 +135,36 @@ public class DepartamentoViewControler implements Initializable, DataChangeListe
 		});
 	}
 
+	private void initDeleteButtons() {
+		tableColumnDelete.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnDelete.setCellFactory(param -> new TableCell<Departamento, Departamento>() {
+			private final Button button = new Button("Delete");
+
+			@Override
+			protected void updateItem(Departamento obj, boolean empty) {
+				super.updateItem(obj, empty);
+
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+
+				setGraphic(button);
+				button.setOnAction(event -> removeDepart(obj));
+			}
+		});
+	}
+
+	private void removeDepart(Departamento obj) {
+		Optional<ButtonType> result = Alerts.showConfirmaticao("Confirmação",
+				"Deseja delatar o departamento selecionado:");
+		if (result.get() == ButtonType.OK) {
+			try {
+				serviceDepart.removeDepart(obj);
+				UpdateTableDepartamento();
+			} catch (DbIntegritExeption e) {
+				Alerts.showAlerts("Erro", null, "Erro ao deletar: " + e.getMessage(), AlertType.ERROR);
+			}
+		}
+	}
 }
