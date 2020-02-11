@@ -8,19 +8,19 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="291.0" prefWidth="348.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DepartamentoListControler">
+<VBox prefHeight="291.0" prefWidth="348.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SellerListControler">
    <children>
-      <Label text="Registro de Departamento">
+      <Label text="Registro de Seller">
          <padding>
             <Insets left="5.0" top="5.0" />
          </padding>
       </Label>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
         <items>
-          <Button fx:id="btNewDepartamento" mnemonicParsing="false" onAction="#onBtNewDepartamentoAction" text="Novo" />
+          <Button fx:id="btNewSeller" mnemonicParsing="false" onAction="#onBtNewSellerAction" text="Novo" />
         </items>
       </ToolBar>
-      <TableView fx:id="tableViewDepartamento" prefHeight="200.0" prefWidth="200.0">
+      <TableView fx:id="tableViewSeller" prefHeight="200.0" prefWidth="200.0">
         <columns>
           <TableColumn fx:id="tableColunaId" prefWidth="75.0" text="Id" />
           <TableColumn fx:id="tableColunaNome" prefWidth="75.0" text="Nome" />

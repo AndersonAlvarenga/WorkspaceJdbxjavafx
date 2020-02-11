@@ -89,7 +89,7 @@ public class DepartmentJDBC implements DepartamentoDao {
 			} catch (SQLException e1) {
 				throw new DbIntegritExeption("Erro ao executar rollback: "+e.getMessage());
 			}
-			throw new DbException("Erro ao deletar: "+e.getMessage());
+			throw new DbIntegritExeption("Erro ao deletar: "+e.getMessage());
 			
 		}
 

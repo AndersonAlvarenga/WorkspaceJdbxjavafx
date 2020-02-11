@@ -17,6 +17,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import modelo.service.DepartamentoService;
+import modelo.service.SellerService;
 
 public class MainViewController implements Initializable {
 
@@ -29,38 +30,40 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onMenuItemVendedorAction() {
-		System.out.println("teste");
+		loadView("/gui/SellerLista.fxml", (SellerListControler seller) -> {
+			seller.setServiceSeller(new SellerService());
+			seller.UpdateTableSeller();
+		});
 	}
 
 	public void onMenuItemDepartamentoAction() {
-		loadView("/gui/DepartamentoLista.fxml",(DepartamentoViewControler dep)->
-		{
+		loadView("/gui/DepartamentoLista.fxml", (DepartamentoListControler dep) -> {
 			dep.setServiceDepartamento(new DepartamentoService());
 			dep.UpdateTableDepartamento();
-		}
-		);
+		});
 	}
 
 	public void onMenuItemAboutAction() {
-		loadView("/gui/AboutView.fxml",x->{});
+		loadView("/gui/AboutView.fxml", x -> {
+		});
 	}
 
-public synchronized <T> void loadView(String nomeView,Consumer<T> expressao) {
-	try {
-	FXMLLoader newView = new FXMLLoader(getClass().getResource(nomeView));
-	VBox newVBox = newView.load();
-	Scene mainScene = Main.getMainScene();
-	VBox mainsVBox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
-	Node mainMenu = mainsVBox.getChildren().get(0);
-	mainsVBox.getChildren().clear();
-	mainsVBox.getChildren().add(mainMenu);
-	mainsVBox.getChildren().addAll(newVBox.getChildren());
-	T dep = newView.getController();
-	expressao.accept(dep);
-	}catch (IOException e) {
-		Alerts.showAlerts("IOException","Error",  e.getMessage(),AlertType.ERROR);
+	public synchronized <T> void loadView(String nomeView, Consumer<T> expressao) {
+		try {
+			FXMLLoader newView = new FXMLLoader(getClass().getResource(nomeView));
+			VBox newVBox = newView.load();
+			Scene mainScene = Main.getMainScene();
+			VBox mainsVBox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
+			Node mainMenu = mainsVBox.getChildren().get(0);
+			mainsVBox.getChildren().clear();
+			mainsVBox.getChildren().add(mainMenu);
+			mainsVBox.getChildren().addAll(newVBox.getChildren());
+			T dep = newView.getController();
+			expressao.accept(dep);
+		} catch (IOException e) {
+			Alerts.showAlerts("IOException", "Error", e.getMessage(), AlertType.ERROR);
+		}
 	}
-}
 
 	@Override
 	public void initialize(URL url, ResourceBundle rs) {

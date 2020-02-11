@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
-import db.DbException;
 import db.DbIntegritExeption;
 import gui.listeres.DataChangeListerner;
 import gui.util.Alerts;
@@ -33,7 +32,7 @@ import javafx.stage.Stage;
 import modelo.entidades.Departamento;
 import modelo.service.DepartamentoService;
 
-public class DepartamentoViewControler implements Initializable, DataChangeListerner {
+public class DepartamentoListControler implements Initializable, DataChangeListerner {
 	private DepartamentoService serviceDepart;
 	@FXML
 	private TableView<Departamento> tableViewDepartamento;
@@ -167,7 +166,7 @@ public class DepartamentoViewControler implements Initializable, DataChangeListe
 				serviceDepart.removeDepart(obj);
 				UpdateTableDepartamento();
 
-			} catch (DbException e) {
+			} catch (DbIntegritExeption e) {
 				Alerts.showAlerts("Erro ao deletar", null, e.getMessage(), AlertType.ERROR);
 			}
 
