@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -36,6 +37,12 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 	@FXML
 	private TableColumn<Seller, String> tableColunaNome;
 	@FXML
+	private TableColumn<Seller, String> tableColunaEmail;
+	@FXML
+	private TableColumn<Seller, Double> tableColunaBaseSalary;
+	@FXML
+	private TableColumn<Seller,Date> tableColunaBirthDate;
+	@FXML
 	private Button btNewSeller;
 	private ObservableList<Seller> obsList;
 	@FXML
@@ -59,6 +66,12 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 	private void InitializableNodes() {
 		tableColunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColunaNome.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tableColunaEmail.setCellValueFactory(new PropertyValueFactory<>("Email"));
+		tableColunaBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
+		Util.formatTableColumnDouble(tableColunaBaseSalary, 2);
+		tableColunaBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+		Util.formatTableColumnDate(tableColunaBirthDate, "dd/MM/yyyy");
+		
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewSeller.prefHeightProperty().bind(stage.heightProperty());
