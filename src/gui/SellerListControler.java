@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.entidades.Seller;
+import modelo.service.DepartamentoService;
 import modelo.service.SellerService;
 
 public class SellerListControler implements Initializable, DataChangeListerner {
@@ -46,10 +47,11 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 	@FXML
 	private TableColumn<Seller, Double> tableColunaBaseSalary;
 	@FXML
-	private TableColumn<Seller,Date> tableColunaBirthDate;
+	private TableColumn<Seller, Date> tableColunaBirthDate;
+
 	@FXML
 	private Button btNewSeller;
-	private ObservableList<Seller> obsList;
+	
 	@FXML
 	private TableColumn<Seller, Seller> tableColumnEDIT;
 	@FXML
@@ -61,12 +63,14 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 		Seller dep = new Seller();
 		createDialogForm(dep, "/gui/SellerForm.fxml", parent);
 	}
+	private ObservableList<Seller>obsList;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		InitializableNodes();
 
 	}
+	
 
 	private void InitializableNodes() {
 		tableColunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -76,7 +80,6 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 		Util.formatTableColumnDouble(tableColunaBaseSalary, 2);
 		tableColunaBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
 		Util.formatTableColumnDate(tableColunaBirthDate, "dd/MM/yyyy");
-		
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewSeller.prefHeightProperty().bind(stage.heightProperty());
@@ -105,7 +108,8 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 
 			SellerFormControlhe controle = loader.getController();
 			controle.setSeller(dep);
-			controle.instanciacaoSellerService(new SellerService());
+			controle.instanciacaoServices(new SellerService(),new DepartamentoService());
+			controle.loadComboBox();
 			controle.carregaListerner(this);
 			controle.updateFormTextFild();
 
@@ -117,7 +121,8 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.showAndWait();
 		} catch (IOException e) {
-			Alerts.showAlerts("Erro", "Erro ao carregar tela", e.getMessage(), AlertType.ERROR);
+			System.out.println(e.getMessage());
+			Alerts.showAlerts("Erro", "Erro ao carregar tela!!!", e.getMessage(), AlertType.ERROR);
 		}
 	}
 
@@ -142,8 +147,7 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 				}
 
 				setGraphic(button);
-				button.setOnAction(
-						event -> createDialogForm(obj, "/gui/SellerForm.fxml", Util.palcoAtual(event)));
+				button.setOnAction(event -> createDialogForm(obj, "/gui/SellerForm.fxml", Util.palcoAtual(event)));
 			}
 		});
 	}
@@ -169,8 +173,7 @@ public class SellerListControler implements Initializable, DataChangeListerner {
 	}
 
 	private void removeDepart(Seller obj) {
-		Optional<ButtonType> result = Alerts.showConfirmaticao("Confirmação",
-				"Deseja delatar o Seller selecionado:");
+		Optional<ButtonType> result = Alerts.showConfirmaticao("Confirmação", "Deseja delatar o Seller selecionado:");
 		if (result.get() == ButtonType.OK) {
 			if (serviceSeller == null) {
 				throw new IllegalStateException("SellerService nao instanciado");

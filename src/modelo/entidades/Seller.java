@@ -47,9 +47,9 @@ public class Seller implements Serializable {
 	}
 
 	public String getEmail() {
-		if(email!=null) {
-		return email;
-		}else {
+		if (email != null) {
+			return email;
+		} else {
 			return "";
 		}
 	}
@@ -67,7 +67,11 @@ public class Seller implements Serializable {
 	}
 
 	public Double getBaseSalary() {
-		return baseSalary;
+		if (baseSalary != null) {
+			return baseSalary;
+		}else {
+			return 0.0;
+		}
 	}
 
 	public void setBaseSalary(Double baseSalary) {

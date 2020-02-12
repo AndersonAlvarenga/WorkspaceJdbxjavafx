@@ -14,28 +14,38 @@ import gui.listeres.DataChangeListerner;
 import gui.util.Alerts;
 import gui.util.Contraints;
 import gui.util.Util;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 import modelo.Exception.ValidacaoExeption;
+import modelo.entidades.Departamento;
 import modelo.entidades.Seller;
+import modelo.service.DepartamentoService;
 import modelo.service.SellerService;
 
 public class SellerFormControlhe implements Initializable {
 	private Seller sellerInstanci;
 
-	public void instaciacaoSeller(Seller dep) {
-		this.sellerInstanci = dep;
+	public void instaciacaoSeller(Seller seller) {
+		this.sellerInstanci = seller;
 	}
 
-	private SellerService depService;
+	private SellerService sellerService;
+	private DepartamentoService depService;
 
-	public void instanciacaoSellerService(SellerService depService) {
+	public void instanciacaoServices(SellerService sellerService, DepartamentoService depService) {
+		this.sellerService = sellerService;
 		this.depService = depService;
 	}
 
@@ -59,6 +69,9 @@ public class SellerFormControlhe implements Initializable {
 	private DatePicker dpBirthDate;
 	@FXML
 	private TextField txtBaseSalary;
+
+	@FXML
+	private ComboBox<Departamento> cbDepartamento;
 	@FXML
 	private Label labelErro;
 	@FXML
@@ -67,6 +80,7 @@ public class SellerFormControlhe implements Initializable {
 	private Label labelErroData;
 	@FXML
 	private Label labelErroSalario;
+	private ObservableList<Departamento> obsList;
 
 	@FXML
 	public void onBtSalvarAction(ActionEvent event) {
@@ -74,7 +88,7 @@ public class SellerFormControlhe implements Initializable {
 			sellerInstanci = getFormData();
 			// Seller depart = new Seller(Util.parseToInt(txtId.getText()),
 			// txtNome.getText());
-			depService.saveNewDepartmento(sellerInstanci);
+			sellerService.saveNewDepartmento(sellerInstanci);
 			Alerts.showAlerts("Cadastro realizado", null, "Seller cadastrado com sucesso", AlertType.INFORMATION);
 			notifiqueList();
 			Util.palcoAtual(event).close();
@@ -82,9 +96,19 @@ public class SellerFormControlhe implements Initializable {
 			setError(e.getErro());
 
 		} catch (DbException e) {
+			e.getStackTrace();
 			Alerts.showAlerts("Erro ao salvar no banco de dados", null, e.getMessage(), AlertType.ERROR);
 		}
 
+	}
+
+	public void loadComboBox() {
+		if (depService == null) {
+			throw new IllegalStateException("DepService igual a null");
+		}
+		List<Departamento> listaDepartamento = depService.findAll();
+		obsList = FXCollections.observableArrayList(listaDepartamento);
+		cbDepartamento.setItems(obsList);
 	}
 
 	public Seller getFormData() {
@@ -123,8 +147,8 @@ public class SellerFormControlhe implements Initializable {
 		Util.palcoAtual(event).close();
 	}
 
-	public void setSeller(Seller departamentoInstanc) {
-		this.sellerInstanci = departamentoInstanc;
+	public void setSeller(Seller sellerInstanc) {
+		this.sellerInstanci = sellerInstanc;
 	}
 
 	public void updateFormTextFild() {
@@ -136,6 +160,10 @@ public class SellerFormControlhe implements Initializable {
 			dpBirthDate.setValue(LocalDateTime
 					.ofInstant(sellerInstanci.getBirthDate().toInstant(), ZoneId.systemDefault()).toLocalDate());
 		}
+		if (cbDepartamento != null) {
+			cbDepartamento.setValue(sellerInstanci.getDepartment());
+		}
+		// cbDepartamento.setValue();
 	}
 
 	@Override
@@ -146,9 +174,24 @@ public class SellerFormControlhe implements Initializable {
 	private void InitializeNodes() {
 		Contraints.setTextFieldInteger(txtId);
 		Contraints.setTextFieldMaxLength(txtNome, 70);
-		Contraints.setTextFieldDouble(txtBaseSalary);
+		if (txtBaseSalary != null) {
+			Contraints.setTextFieldDouble(txtBaseSalary);
+		}
 		Contraints.setTextFieldMaxLength(txtEmail, 60);
 		Util.formatDatePicker(dpBirthDate, "dd/MM/yyyy");
+		initializeComboBoxDepartamento();
+	}
+
+	private void initializeComboBoxDepartamento() {
+		Callback<ListView<Departamento>, ListCell<Departamento>> factory = lv -> new ListCell<Departamento>() {
+			@Override
+			protected void updateItem(Departamento item, boolean empty) {
+				super.updateItem(item, empty);
+				setText(empty ? "" : item.getNome());
+			}
+		};
+		cbDepartamento.setCellFactory(factory);
+		cbDepartamento.setButtonCell(factory.call(null));
 	}
 
 }
