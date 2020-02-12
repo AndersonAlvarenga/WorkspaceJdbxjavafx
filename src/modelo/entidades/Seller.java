@@ -47,7 +47,11 @@ public class Seller implements Serializable {
 	}
 
 	public String getEmail() {
+		if(email!=null) {
 		return email;
+		}else {
+			return "";
+		}
 	}
 
 	public void setEmail(String email) {

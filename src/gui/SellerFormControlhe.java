@@ -1,6 +1,8 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import modelo.Exception.ValidacaoExeption;
@@ -51,7 +54,19 @@ public class SellerFormControlhe implements Initializable {
 	@FXML
 	private TextField txtNome;
 	@FXML
+	private TextField txtEmail;
+	@FXML
+	private DatePicker dpBirthDate;
+	@FXML
+	private TextField txtBaseSalary;
+	@FXML
 	private Label labelErro;
+	@FXML
+	private Label labelErroEmail;
+	@FXML
+	private Label labelErroData;
+	@FXML
+	private Label labelErroSalario;
 
 	@FXML
 	public void onBtSalvarAction(ActionEvent event) {
@@ -63,19 +78,19 @@ public class SellerFormControlhe implements Initializable {
 			Alerts.showAlerts("Cadastro realizado", null, "Seller cadastrado com sucesso", AlertType.INFORMATION);
 			notifiqueList();
 			Util.palcoAtual(event).close();
-		}catch(ValidacaoExeption e){
+		} catch (ValidacaoExeption e) {
 			setError(e.getErro());
-			
-		}catch (DbException e) {
+
+		} catch (DbException e) {
 			Alerts.showAlerts("Erro ao salvar no banco de dados", null, e.getMessage(), AlertType.ERROR);
 		}
 
 	}
 
 	public Seller getFormData() {
-		Seller obj = new Seller(); 
+		Seller obj = new Seller();
 		ValidacaoExeption validExeption = new ValidacaoExeption("Erro de validação");
-		
+
 		obj.setId(Util.parseToInt(txtId.getText()));
 		if (txtNome.getText() == null || txtNome.getText().trim().equals("")) {
 			validExeption.addErro("Nome", "Campo não pode ser vazio");
@@ -115,6 +130,12 @@ public class SellerFormControlhe implements Initializable {
 	public void updateFormTextFild() {
 		txtId.setText(String.valueOf(sellerInstanci.getId()));
 		txtNome.setText(String.valueOf(sellerInstanci.getName()));
+		txtEmail.setText(String.valueOf(sellerInstanci.getEmail()));
+		txtBaseSalary.setText(String.format("%.2f", sellerInstanci.getBaseSalary()));
+		if (sellerInstanci.getBirthDate() != null) {
+			dpBirthDate.setValue(LocalDateTime
+					.ofInstant(sellerInstanci.getBirthDate().toInstant(), ZoneId.systemDefault()).toLocalDate());
+		}
 	}
 
 	@Override
@@ -124,7 +145,10 @@ public class SellerFormControlhe implements Initializable {
 
 	private void InitializeNodes() {
 		Contraints.setTextFieldInteger(txtId);
-		Contraints.setTextFieldMaxLength(txtNome, 30);
+		Contraints.setTextFieldMaxLength(txtNome, 70);
+		Contraints.setTextFieldDouble(txtBaseSalary);
+		Contraints.setTextFieldMaxLength(txtEmail, 60);
+		Util.formatDatePicker(dpBirthDate, "dd/MM/yyyy");
 	}
 
 }
