@@ -3,7 +3,7 @@ package modelo.entidades;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Seller implements Serializable{
+public class Seller implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Integer id;
@@ -12,9 +12,9 @@ public class Seller implements Serializable{
 	private Date birthDate;
 	private Double baseSalary;
 	private Departamento department;
-	
+
 	public Seller() {
-		
+
 	}
 
 	public Seller(Integer id, String name, String email, Date birthDate, Double baseSalary, Departamento department) {
@@ -35,7 +35,11 @@ public class Seller implements Serializable{
 	}
 
 	public String getName() {
-		return name;
+		if (name == null) {
+			return "";
+		} else {
+			return name;
+		}
 	}
 
 	public void setName(String name) {
@@ -98,11 +102,8 @@ public class Seller implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Seller id: " + id + ", name: " + name + ", email: " + email + ", birthDate: " + birthDate + ", baseSalary: "
-				+ baseSalary + ", department: " + department;
+		return "Seller id: " + id + ", name: " + name + ", email: " + email + ", birthDate: " + birthDate
+				+ ", baseSalary: " + baseSalary + ", department: " + department;
 	}
-	
-	
-	
 
 }
