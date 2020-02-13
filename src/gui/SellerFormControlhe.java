@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -88,7 +90,7 @@ public class SellerFormControlhe implements Initializable {
 			sellerInstanci = getFormData();
 			// Seller depart = new Seller(Util.parseToInt(txtId.getText()),
 			// txtNome.getText());
-			sellerService.saveNewDepartmento(sellerInstanci);
+			sellerService.saveNewSeller(sellerInstanci);
 			Alerts.showAlerts("Cadastro realizado", null, "Seller cadastrado com sucesso", AlertType.INFORMATION);
 			notifiqueList();
 			Util.palcoAtual(event).close();
@@ -116,10 +118,39 @@ public class SellerFormControlhe implements Initializable {
 		ValidacaoExeption validExeption = new ValidacaoExeption("Erro de validação");
 
 		obj.setId(Util.parseToInt(txtId.getText()));
+
 		if (txtNome.getText() == null || txtNome.getText().trim().equals("")) {
 			validExeption.addErro("Nome", "Campo não pode ser vazio");
+
 		}
 		obj.setName(txtNome.getText());
+
+		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			validExeption.addErro("Email", "Campo não pode ser vazio");
+
+		}
+		obj.setEmail(txtEmail.getText());
+
+		if (txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("0.00")) {
+			validExeption.addErro("baseSalary", "Campo não pode ser vazio");
+
+		}
+		obj.setBaseSalary(Util.parseToDouble(txtBaseSalary.getText()));
+
+		System.out.println();
+		if (dpBirthDate.getValue() == null) {
+			validExeption.addErro("date", "Campo não pode ser vazio");
+		} else {
+			Instant instant = Instant.from(dpBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setBirthDate(Date.from(instant));
+		}
+
+		if (cbDepartamento == null) {
+			validExeption.addErro("departamento", "Campo não pode ser vazio");
+
+		}
+		obj.setDepartment(cbDepartamento.getValue());
+
 		if (validExeption.getErro().size() > 0) {
 			throw validExeption;
 		}
@@ -128,9 +159,10 @@ public class SellerFormControlhe implements Initializable {
 
 	private void setError(Map<String, String> erro) {
 		Set<String> listaSet = erro.keySet();
-		if (listaSet.contains("Nome")) {
-			labelErro.setText(erro.get("Nome"));
-		}
+		labelErro.setText(listaSet.contains("Nome") ? erro.get("Nome") : "");
+		labelErroData.setText(listaSet.contains("date")?erro.get("date"):"");
+		labelErroEmail.setText(listaSet.contains("Email")?erro.get("Email"):"");
+		labelErroSalario.setText(listaSet.contains("baseSalary")?erro.get("baseSalary"):"");
 	}
 
 	private void notifiqueList() {
@@ -160,10 +192,13 @@ public class SellerFormControlhe implements Initializable {
 			dpBirthDate.setValue(LocalDateTime
 					.ofInstant(sellerInstanci.getBirthDate().toInstant(), ZoneId.systemDefault()).toLocalDate());
 		}
-		if (cbDepartamento != null) {
+		
+		if (cbDepartamento.getValue() != null) {
 			cbDepartamento.setValue(sellerInstanci.getDepartment());
+		}else {
+			cbDepartamento.getSelectionModel().selectFirst();//para pegar primeiro item do combobox
 		}
-		// cbDepartamento.setValue();
+		
 	}
 
 	@Override

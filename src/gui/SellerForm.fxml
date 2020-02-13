@@ -34,6 +34,10 @@
             <Label text="Nome:" GridPane.rowIndex="1" />
             <TextField fx:id="txtId" editable="false" GridPane.columnIndex="1" />
             <TextField fx:id="txtNome" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="txtBaseSalary" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <DatePicker fx:id="dpBirthDate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ComboBox fx:id="cbDepartamento" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label fx:id="labelErro" textFill="#fc0c0c" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <children>
@@ -45,13 +49,9 @@
             <Label text="Salario Base" GridPane.rowIndex="3" />
             <Label text="Data aniversário" GridPane.rowIndex="4" />
             <Label text="Departamento" GridPane.rowIndex="5" />
-            <DatePicker fx:id="dpBirthDate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="txtBaseSalary" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label fx:id="labelErroEmail" textFill="#f80505" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <Label fx:id="labelErroSalario" textFill="#fc0606" GridPane.columnIndex="2" GridPane.rowIndex="3" />
             <Label fx:id="labelErroData" textFill="#ee0303" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <ComboBox fx:id="cbDepartamento" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
          </children>
       </GridPane>
       <Label layoutX="33.0" layoutY="6.0" text="Cadastro de Seller" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">

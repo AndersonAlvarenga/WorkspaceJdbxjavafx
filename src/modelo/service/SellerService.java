@@ -17,7 +17,7 @@ public class SellerService {
 		sellerService.insert(seller);
 	}
 
-	public void saveNewDepartmento(Seller obj) {
+	public void saveNewSeller(Seller obj) {
 		if (obj.getId() == null) {
 			sellerService.insert(obj);
 		} else {
