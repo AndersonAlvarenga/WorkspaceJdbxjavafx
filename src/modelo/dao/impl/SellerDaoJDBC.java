@@ -143,6 +143,7 @@ public class SellerDaoJDBC implements SellerDao {
 		seller.setEmail(rs.getString("Email"));
 		seller.setBaseSalary(rs.getDouble("BaseSalary"));
 		seller.setBirthDate(new java.util.Date(rs.getDate("BirthDate").getTime()));
+		seller.setDepartment(depart);
 		return seller;
 	}
 
@@ -166,11 +167,13 @@ public class SellerDaoJDBC implements SellerDao {
 			Map<Integer, Departamento> map = new HashMap<Integer, Departamento>();
 			while (rs.next()) {
 				Departamento dep = map.get(rs.getInt("DepartmentId"));
+				
 				if (dep == null) {
 					dep = instaciacaoDepartamento(rs);
 					map.put(rs.getInt("DepartmentId"), dep);
 				}
 				Seller seller = instaciacaoSeller(rs, dep);
+				
 				listaVendedores.add(seller);
 			}
 			if (listaVendedores.isEmpty()) {
